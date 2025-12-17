@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function index()
+    
     {
         $products = Product::all();
         return view('products.index', compact('products'));
@@ -16,6 +17,12 @@ class ProductController extends Controller
 {
     return view('products.create');
 }
+public function show($id)
+{
+    $product = Product::findOrFail($id);
+    return view('products.show', compact('product'));
+}
+
 
 public function store(Request $request)
 {

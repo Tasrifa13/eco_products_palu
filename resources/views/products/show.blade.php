@@ -15,10 +15,24 @@
             Rp {{ number_format($product->price) }}
             <form action="/cart/add/{{ $product->id }}" method="POST">
     @csrf
-    <button class="btn btn-success mb-3">
-        + Tambah ke Keranjang
+    <form action="/cart/add/{{ $product->id }}" method="POST">
+    @csrf
+    <button type="submit" class="btn btn-success">
+        Tambah ke Keranjang
     </button>
 </form>
+</form>
+
+<form action="{{ route('checkout.direct') }}" method="POST" style="display:inline-block;">
+    @csrf
+    <input type="hidden" name="product_id" value="{{ $product->id }}">
+    <button type="submit" class="btn btn-primary">
+        Checkout Sekarang
+    </button>
+</form>
+
+
+
 
         </h4>
         <p>{{ $product->description }}</p>

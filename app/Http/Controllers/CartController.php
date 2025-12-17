@@ -3,46 +3,77 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use App\Models\Product;
+use App\Models\Cart;
+use App\Models\CartItem;
 
 class CartController extends Controller
 {
+    // TAMPIL CART
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $sessionId = Session::getId();
+
+        $cart = Cart::where('session_id', $sessionId)
+                    ->with('items.product')
+                    ->first();
+
         return view('cart.index', compact('cart'));
     }
 
-    public function add($id)
+    // TAMBAH KE CART
+    public function addToCart($productId)
     {
-        $product = Product::findOrFail($id);
-        $cart = session()->get('cart', []);
+        $product = Product::findOrFail($productId);
+        $sessionId = Session::getId();
 
-        if (isset($cart[$id])) {
-            $cart[$id]['qty']++;
+        $cart = Cart::firstOrCreate([
+            'session_id' => $sessionId
+        ]);
+
+        $item = CartItem::where('cart_id', $cart->id)
+                        ->where('product_id', $productId)
+                        ->first();
+
+        if ($item) {
+            $item->qty++;
+            $item->save();
         } else {
-            $cart[$id] = [
-                'name' => $product->name,
-                'price' => $product->price,
-                'image' => $product->image,
-                'qty' => 1
-            ];
+            CartItem::create([
+                'cart_id'    => $cart->id,
+                'product_id' => $productId,
+                'price'      => $product->price, // ✅ SUDAH BENAR
+                'qty'        => 1
+            ]);
         }
 
-        session()->put('cart', $cart);
-
-        return redirect()->back()->with('success', 'Produk ditambahkan ke keranjang');
+        return back()->with('success', 'Produk ditambahkan ke keranjang');
     }
+    public function update(Request $request, $id)
+{
+    $item = CartItem::findOrFail($id);
 
-    public function remove($id)
-    {
-        $cart = session()->get('cart', []);
+    if ($request->action === 'increase') {
+        $item->qty++;
+    } elseif ($request->action === 'decrease') {
+        $item->qty--;
 
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
+        if ($item->qty <= 0) {
+            $item->delete();
+            return back();
         }
-
-        return redirect('/cart');
     }
+
+    $item->save();
+    return back();
+}
+public function destroy($id)
+{
+    $item = CartItem::findOrFail($id);
+    $item->delete();
+
+    return back()->with('success', 'Produk dihapus dari keranjang');
+}
+
 }

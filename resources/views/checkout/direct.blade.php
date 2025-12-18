@@ -5,7 +5,15 @@
 @section('content')
 <h2>Checkout Langsung</h2>
 
-@if(session('direct_checkout'))
+@php
+    $checkout = session('direct_checkout');
+@endphp
+
+@if($checkout)
+    @php
+        $item = $checkout['item'];
+    @endphp
+
     <table class="table">
         <thead>
             <tr>
@@ -15,25 +23,25 @@
             </tr>
         </thead>
         <tbody>
-        @foreach(session('direct_checkout.items') as $item)
             <tr>
-                <td>{{ $item['product']->name }}</td>
+                <td>{{ $item['name'] }}</td>
                 <td>{{ $item['qty'] }}</td>
                 <td>Rp {{ number_format($item['subtotal']) }}</td>
             </tr>
-        @endforeach
         </tbody>
         <tfoot>
             <tr>
                 <th colspan="2">Total</th>
-                <th>Rp {{ number_format(session('direct_checkout.total')) }}</th>
+                <th>Rp {{ number_format($checkout['total']) }}</th>
             </tr>
         </tfoot>
     </table>
 
     <form action="{{ route('checkout.finalize') }}" method="POST">
         @csrf
-        <button class="btn btn-success">Bayar Sekarang</button>
+        <button class="btn btn-success">
+            Bayar Sekarang
+        </button>
     </form>
 @else
     <p>Keranjang kosong.</p>

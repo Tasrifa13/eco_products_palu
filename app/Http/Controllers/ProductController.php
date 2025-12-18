@@ -45,5 +45,20 @@ public function store(Request $request)
 
     return redirect('/products')->with('success', 'Produk berhasil ditambahkan');
 }
+public function destroy($id)
+{
+    $product = Product::findOrFail($id);
+
+    // hapus file gambar jika ada
+    if ($product->image && file_exists(public_path('images/products/' . $product->image))) {
+        unlink(public_path('images/products/' . $product->image));
+    }
+
+    $product->delete();
+
+    return redirect('/products')
+        ->with('success', 'Produk berhasil dihapus');
+}
+
 
 }

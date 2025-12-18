@@ -57,10 +57,18 @@
                     serta mendukung UMKM lokal.
                 </p>
             </div>
-            <div class="col-md-6 text-center">
+            <div class="col-md-3 text-center">
                 <img src="{{ asset('images/eco05.jpg') }}"
                     class="img-fluid rounded"
-                    alt="Eco Product">
+                    alt="Eco Product" 
+                    style="max-width: 100%; height: 70%;">
+
+            </div>
+            <div class="col-md-3 text-center">
+                <img src="{{ asset('images/eco06.jpg') }}"
+                    class="img-fluid rounded"
+                    alt="Eco Product" 
+                    style="max-width: 100%; height: 70%;">
 
             </div>
         </div>

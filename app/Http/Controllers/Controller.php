@@ -8,6 +8,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
  use App\Models\Cart;
 use App\Models\CartItem;
+use Illuminate\Http\Request;
+
 
 
 class Controller extends BaseController

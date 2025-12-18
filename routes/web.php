@@ -53,7 +53,20 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 
 
-Route::post('/checkout/direct', [CheckoutController::class, 'directCheckout'])->name('checkout.direct');
+// POST: dari tombol checkout di detail produk
+Route::post('/checkout/direct', [CheckoutController::class, 'directCheckout'])
+    ->name('checkout.direct.post');
+
+// GET: tampilkan halaman checkout 1 produk
+Route::get('/checkout/direct', [CheckoutController::class, 'showDirectCheckout'])
+    ->name('checkout.direct');
+Route::post('/checkout/finalize', [CheckoutController::class, 'finalize'])
+    ->name('checkout.finalize');
+Route::get('/products/create', [ProductController::class, 'create'])
+    ->name('products.create');
+ Route::resource('products', ProductController::class);
+
+
 
 
 

@@ -7,6 +7,8 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product; // <- PENTING! pastikan ini ada
 
+
+
 class CheckoutController extends Controller
 {
     public function index()
@@ -52,34 +54,57 @@ class CheckoutController extends Controller
     }
 
 public function directCheckout(Request $request)
-    {
-        $product = Product::findOrFail($request->product_id);
+{
+    $product = Product::findOrFail($request->product_id);
 
-        $cart = Cart::firstOrCreate(
-            ['user_id' => auth()->id()],
-            ['user_id' => auth()->id()]
-        );
+    $directCheckout = [
+        'type' => 'direct',
+        'item' => [
+            'product_id' => $product->id,
+            'name'       => $product->name,
+            'price'      => $product->price,
+            'qty'        => 1,
+            'subtotal'   => $product->price,
+        ],
+        'total' => $product->price,
+    ];
 
-        // Buat item baru di cart
-        CartItem::create([
-    'cart_id' => $cart->id,
-    'product_id' => $product->id,
-    'qty' => 1,
-    'price' => $product->price, // <-- ini wajib
-]);
+    session(['direct_checkout' => $directCheckout]);
 
-        return redirect()->route('checkout.index')->with('success', 'Produk siap di-checkout!');
-    }
+    return redirect()->route('checkout.direct');
+}
+
+
 
 public function showDirectCheckout()
 {
-    $cart = session('direct_checkout');
+    $checkout = session('direct_checkout');
 
-    if (!$cart) {
+    if (!$checkout) {
         return redirect('/products')->with('error', 'Tidak ada produk untuk checkout.');
     }
 
-    return view('checkout.direct', compact('cart'));
+    return view('checkout.direct', compact('checkout'));
 }
+public function finalize(Request $request)
+{
+    $checkout = session('direct_checkout');
+
+    if (!$checkout) {
+        return redirect('/')->with('error', 'Checkout tidak ditemukan');
+    }
+
+    // 🔹 NANTI: simpan ke tabel orders
+    // 🔹 NANTI: simpan order_items
+    // 🔹 NANTI: integrasi payment gateway
+
+    // Untuk sekarang, kita anggap berhasil
+    session()->forget('direct_checkout');
+
+    return redirect('/')
+        ->with('success', 'Pembayaran berhasil!');
+}
+
+
 
 }

@@ -5,6 +5,12 @@
 @section('content')
 <h2 class="mb-4">Produk Ramah Lingkungan</h2>
 
+<a href="{{ route('products.create') }}" class="btn btn-primary mb-3">
+    + Tambah Produk
+</a>
+
+<h2 class="mb-4">Produk Ramah Lingkungan</h2>
+
 <div class="row">
     @foreach($products as $product)
         <div class="col-md-4 mb-4">

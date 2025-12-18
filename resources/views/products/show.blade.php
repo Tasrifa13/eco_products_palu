@@ -31,6 +31,15 @@
     </button>
 </form>
 
+    <form action="{{ route('products.destroy', $product->id) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button class="btn btn-danger">Hapus</button>
+    </form>
+</div>
+
+
+
 
 
 
